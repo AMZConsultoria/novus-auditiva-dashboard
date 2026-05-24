@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Novus Auditiva · Painel Financeiro 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+:root{
+  --navy:#1B3564;--navy2:#24478C;--navy3:#0F1F3D;
+  --gold:#C4A44A;--gold2:#E8C56A;--gold3:#8B6F2E;
+  --bg:#F2F5FA;--surface:#fff;
+  --ok:#16A34A;--err:#DC2626;--warn:#D97706;
+  --txt:#1E293B;--muted:#64748B;--border:#E2E8F0;
+  --sh:0 2px 16px rgba(0,0,0,.08);
+  --r:14px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Poppins',sans-serif;background:var(--bg);color:var(--txt);min-height:100vh}
+
+/* ── HEADER ── */
+header{
+  background:linear-gradient(135deg,var(--navy3) 0%,var(--navy) 60%,var(--navy2) 100%);
+  height:68px;padding:0 2rem;
+  display:flex;align-items:center;justify-content:space-between;
+  position:sticky;top:0;z-index:100;
+  box-shadow:0 2px 20px rgba(0,0,0,.25);
+}
+.h-brand{display:flex;align-items:center;gap:.9rem}
+.h-badge{
+  width:42px;height:42px;border-radius:10px;
+  background:var(--gold);
+  display:flex;align-items:center;justify-content:center;
+  font-weight:700;font-size:1rem;color:var(--navy3);letter-spacing:-.5px;
+}
+.h-brand h1{color:#fff;font-size:1.05rem;font-weight:600;line-height:1.25}
+.h-brand small{color:rgba(255,255,255,.55);font-size:.72rem;font-weight:400}
+.h-right{display:flex;align-items:center;gap:1rem}
+.h-update{text-align:right;color:rgba(255,255,255,.55);font-size:.72rem;line-height:1.4}
+.h-update strong{color:rgba(255,255,255,.85);display:block;font-weight:500}
+.btn-upload{
+  background:var(--gold);color:var(--navy3);border:none;
+  padding:.48rem 1.1rem;border-radius:8px;font-size:.82rem;font-weight:600;
+  cursor:pointer;display:flex;align-items:center;gap:.45rem;
+  font-family:'Poppins',sans-serif;transition:all .2s;white-space:nowrap;
+}
+.btn-upload:hover{background:var(--gold2);transform:translateY(-1px)}
+
+/* ── MAIN ── */
+main{max-width:1440px;margin:0 auto;padding:1.75rem 2rem}
+
+/* ── KPI CARDS ── */
+.kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1.2rem;margin-bottom:1.6rem}
+.kpi{
+  background:var(--surface);border-radius:var(--r);padding:1.35rem 1.5rem;
+  box-shadow:var(--sh);border-top:3px solid var(--navy);transition:transform .2s;
+  display:flex;flex-direction:column;gap:.3rem;
+}
+.kpi:hover{transform:translateY(-2px)}
+.kpi.ok{border-top-color:var(--ok)}
+.kpi.err{border-top-color:var(--err)}
+.kpi.gold{border-top-color:var(--gold)}
+.kpi.blue{border-top-color:#3B82F6}
+.kpi-label{
+  font-size:.72rem;color:var(--muted);font-weight:500;
+  text-transform:uppercase;letter-spacing:.06em;
+  display:flex;align-items:center;gap:.35rem;
+}
+.kpi-label i{font-size:.85rem}
+.kpi-value{font-size:1.55rem;font-weight:700;line-height:1}
+.kpi-value.pos{color:var(--ok)}
+.kpi-value.neg{color:var(--err)}
+.kpi-sub{font-size:.74rem;color:var(--muted)}
+.kpi-sub b{color:var(--txt)}
+
+/* ── CHARTS ── */
+.charts-row{display:grid;grid-template-columns:2fr 1fr;gap:1.2rem;margin-bottom:1.6rem}
+.card{
+  background:var(--surface);border-radius:var(--r);
+  padding:1.5rem;box-shadow:var(--sh);
+}
+.card-title{
+  font-size:.9rem;font-weight:600;color:var(--txt);
+  margin-bottom:1.25rem;display:flex;align-items:center;gap:.5rem;
+}
+.card-title i{color:var(--navy);font-size:.95rem}
+.chart-wrap{position:relative;height:300px}
+
+/* ── TABLE ── */
+.table-card{margin-bottom:1.6rem;overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:.81rem}
+thead th{
+  background:var(--navy);color:#fff;
+  padding:.7rem 1rem;text-align:right;
+  font-weight:500;font-size:.75rem;white-space:nowrap;
+}
+thead th:first-child{text-align:left;border-radius:8px 0 0 0}
+thead th:last-child{border-radius:0 8px 0 0;background:var(--navy3)}
+tbody tr:nth-child(even){background:#F8FAFD}
+tbody tr:hover{background:#EEF4FF}
+td{
+  padding:.6rem 1rem;text-align:right;
+  border-bottom:1px solid var(--border);white-space:nowrap;
+}
+td:first-child{text-align:left;font-weight:500;max-width:260px}
+td.neg{color:var(--err)}
+td.pos{color:var(--ok)}
+tr.row-total td{background:var(--navy);color:#fff;font-weight:600}
+tr.row-sub td{background:#EEF4FF;font-weight:600;color:var(--navy)}
+tr.row-dist td{background:#FEF9EC;font-weight:600;color:var(--gold3)}
+
+/* ── CHAT ── */
+.chat-card{overflow:hidden}
+.chat-hd{
+  background:linear-gradient(135deg,var(--navy3) 0%,var(--navy) 100%);
+  padding:1.1rem 1.5rem;display:flex;align-items:center;gap:.75rem;
+}
+.chat-icon{
+  width:38px;height:38px;border-radius:50%;
+  background:var(--gold);display:flex;align-items:center;justify-content:center;
+  color:var(--navy3);font-size:.9rem;flex-shrink:0;
+}
+.chat-hd h3{color:#fff;font-size:.95rem;font-weight:600}
+.chat-hd p{color:rgba(255,255,255,.55);font-size:.75rem}
+.chat-suggestions{
+  padding:.9rem 1.5rem .5rem;display:flex;flex-wrap:wrap;gap:.5rem;
+  border-bottom:1px solid var(--border);
+}
+.sug{
+  background:#EEF4FF;color:var(--navy);
+  border:1px solid #C7D2FE;
+  padding:.35rem .85rem;border-radius:20px;
+  font-size:.76rem;cursor:pointer;
+  transition:all .2s;font-family:'Poppins',sans-serif;
+}
+.sug:hover{background:var(--navy);color:#fff;border-color:var(--navy)}
+.chat-msgs{
+  padding:1.25rem 1.5rem;min-height:180px;max-height:380px;
+  overflow-y:auto;display:flex;flex-direction:column;gap:.9rem;
+}
+.msg-welcome{
+  text-align:center;padding:2rem;color:var(--muted);font-size:.85rem;
+}
+.msg-welcome i{font-size:2rem;color:var(--border);display:block;margin-bottom:.5rem}
+.msg{max-width:82%;padding:.8rem 1.1rem;border-radius:12px;font-size:.85rem;line-height:1.65}
+.msg.user{
+  background:var(--navy);color:#fff;align-self:flex-end;
+  border-radius:12px 12px 4px 12px;
+}
+.msg.bot{
+  background:#F0F5FF;color:var(--txt);align-self:flex-start;
+  border-radius:12px 12px 12px 4px;border-left:3px solid var(--gold);
+  white-space:pre-line;
+}
+.msg.loading{
+  background:#F0F5FF;align-self:flex-start;
+  display:flex;gap:5px;align-items:center;
+  padding:.9rem 1.2rem;border-radius:12px;
+}
+.dot{width:8px;height:8px;background:var(--navy);border-radius:50%;animation:bounce 1.2s infinite}
+.dot:nth-child(2){animation-delay:.2s}
+.dot:nth-child(3){animation-delay:.4s}
+@keyframes bounce{0%,80%,100%{transform:translateY(0)}40%{transform:translateY(-8px)}}
+.chat-input-row{
+  padding:.9rem 1.5rem;border-top:1px solid var(--border);
+  display:flex;gap:.7rem;
+}
+.chat-in{
+  flex:1;padding:.7rem 1rem;
+  border:2px solid var(--border);border-radius:10px;
+  font-family:'Poppins',sans-serif;font-size:.85rem;color:var(--txt);
+  outline:none;transition:border-color .2s;
+}
+.chat-in:focus{border-color:var(--navy)}
+.btn-send{
+  background:var(--navy);color:#fff;border:none;
+  padding:.7rem 1.3rem;border-radius:10px;
+  font-size:.85rem;cursor:pointer;
+  display:flex;align-items:center;gap:.45rem;
+  font-family:'Poppins',sans-serif;font-weight:500;
+  transition:background .2s;white-space:nowrap;
+}
+.btn-send:hover{background:var(--navy2)}
+
+/* ── MODAL ── */
+.overlay{
+  display:none;position:fixed;inset:0;
+  background:rgba(0,0,0,.55);z-index:200;
+  align-items:center;justify-content:center;
+}
+.overlay.on{display:flex}
+.modal{
+  background:#fff;border-radius:18px;padding:2rem;
+  width:480px;max-width:92vw;
+  box-shadow:0 24px 64px rgba(0,0,0,.3);
+}
+.modal h3{font-size:1rem;color:var(--navy);margin-bottom:1.5rem;display:flex;align-items:center;gap:.5rem}
+.drop{
+  border:2px dashed var(--border);border-radius:12px;
+  padding:2.5rem;text-align:center;cursor:pointer;
+  transition:all .2s;margin-bottom:1rem;
+}
+.drop:hover,.drop.over{border-color:var(--navy);background:#EEF4FF}
+.drop i{font-size:2.4rem;color:var(--navy);margin-bottom:.7rem}
+.drop p{color:var(--muted);font-size:.85rem}
+.drop b{color:var(--navy)}
+#fileIn{display:none}
+.modal-btns{display:flex;justify-content:flex-end;gap:.6rem;margin-top:.75rem}
+.btn-outline{
+  padding:.55rem 1.1rem;border:1px solid var(--border);border-radius:8px;
+  background:#fff;cursor:pointer;font-family:'Poppins',sans-serif;font-size:.82rem;
+}
+.status-box{
+  padding:.7rem 1rem;border-radius:8px;font-size:.82rem;
+  margin-top:.5rem;display:none;
+}
+.status-box.ok{background:#D1FAE5;color:#065F46;display:block}
+.status-box.err{background:#FEE2E2;color:#991B1B;display:block}
+.status-box.info{background:#EEF4FF;color:var(--navy);display:block}
+
+/* ── SPINNER ── */
+.spinner-overlay{
+  display:none;position:fixed;inset:0;
+  background:rgba(255,255,255,.9);z-index:300;
+  align-items:center;justify-content:center;flex-direction:column;gap:1rem;
+}
+.spinner-overlay.on{display:flex}
+.spin{
+  width:46px;height:46px;
+  border:4px solid var(--border);border-top-color:var(--navy);
+  border-radius:50%;animation:rot .8s linear infinite;
+}
+@keyframes rot{to{transform:rotate(360deg)}}
+
+/* ── FOOTER ── */
+footer{
+  text-align:center;padding:1.75rem 2rem;
+  color:var(--muted);font-size:.75rem;
+  border-top:1px solid var(--border);margin-top:1rem;
+}
+footer strong{color:var(--navy)}
+
+/* ── RESPONSIVE ── */
+@media(max-width:1100px){.charts-row{grid-template-columns:1fr}}
+@media(max-width:768px){
+  .kpi-grid{grid-template-columns:repeat(2,1fr)}
+  main{padding:1rem}
+  .h-update{display:none}
+}
+@media(max-width:480px){.kpi-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<!-- spinner -->
+<div class="spinner-overlay" id="spin">
+  <div class="spin"></div>
+  <p style="color:var(--navy);font-weight:500">Carregando dados…</p>
+</div>
+
+<!-- header -->
+<header>
+  <div class="h-brand">
+    <div class="h-badge">NA</div>
+    <div>
+      <h1>Novus Auditiva</h1>
+      <small>Painel Financeiro 2026 &nbsp;·&nbsp; Powered by AMZ Consultoria</small>
+    </div>
+  </div>
+  <div class="h-right">
+    <div class="h-update">
+      Última atualização<strong id="hUpdate">—</strong>
+    </div>
+    <button class="btn-upload" onclick="openModal()">
+      <i class="fas fa-cloud-upload-alt"></i>Atualizar dados
+    </button>
+  </div>
+</header>
+
+<!-- main -->
+<main>
+
+  <!-- KPIs -->
+  <div class="kpi-grid">
+    <div class="kpi ok">
+      <div class="kpi-label"><i class="fas fa-arrow-trend-up"></i>Receita Bruta</div>
+      <div class="kpi-value pos" id="k-rb-mes">—</div>
+      <div class="kpi-sub">Mês <b id="k-mes">—</b> &nbsp;|&nbsp; <b id="k-rb-ano">—</b> no ano</div>
+    </div>
+    <div class="kpi err">
+      <div class="kpi-label"><i class="fas fa-arrow-trend-down"></i>Despesas Totais</div>
+      <div class="kpi-value neg" id="k-dep-mes">—</div>
+      <div class="kpi-sub">Mês <b id="k-mes2">—</b> &nbsp;|&nbsp; <b id="k-dep-ano">—</b> no ano</div>
+    </div>
+    <div class="kpi blue">
+      <div class="kpi-label"><i class="fas fa-scale-balanced"></i>Resultado (Caixa)</div>
+      <div class="kpi-value" id="k-res-mes">—</div>
+      <div class="kpi-sub">Mês <b id="k-mes3">—</b> &nbsp;|&nbsp; <b id="k-res-ano">—</b> no ano</div>
+    </div>
+    <div class="kpi gold">
+      <div class="kpi-label"><i class="fas fa-hand-holding-dollar"></i>Distribuição de Lucros</div>
+      <div class="kpi-value" id="k-dis-mes">—</div>
+      <div class="kpi-sub">Mês <b id="k-mes4">—</b> &nbsp;|&nbsp; <b id="k-dis-ano">—</b> no ano</div>
+    </div>
+  </div>
+
+  <!-- charts -->
+  <div class="charts-row">
+    <div class="card">
+      <div class="card-title"><i class="fas fa-chart-column"></i>Receitas vs Despesas — Mensal 2026</div>
+      <div class="chart-wrap"><canvas id="cBar"></canvas></div>
+    </div>
+    <div class="card">
+      <div class="card-title"><i class="fas fa-chart-pie"></i>Composição das Despesas</div>
+      <div class="chart-wrap"><canvas id="cDough"></canvas></div>
+    </div>
+  </div>
+
+  <!-- table -->
+  <div class="card table-card">
+    <div class="card-title"><i class="fas fa-table-list"></i>Resumo por Categoria — 2026</div>
+    <table>
+      <thead>
+        <tr>
+          <th>Categoria</th>
+          <th>JAN</th><th>FEV</th><th>MAR</th><th>ABR</th><th>MAI</th>
+          <th>JUN</th><th>JUL</th><th>AGO</th><th>SET</th><th>OUT</th>
+          <th>NOV</th><th>DEZ</th><th>Total 2026</th>
+        </tr>
+      </thead>
+      <tbody id="tBody">
+        <tr><td colspan="14" style="text-align:center;padding:2rem;color:var(--muted)">Carregando…</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- AI chat -->
+  <div class="card chat-card">
+    <div class="chat-hd">
+      <div class="chat-icon"><i class="fas fa-robot"></i></div>
+      <div>
+        <h3>Assistente Financeiro IA</h3>
+        <p>Faça perguntas sobre o fluxo de caixa da Novus Auditiva</p>
+      </div>
+    </div>
+    <div class="chat-suggestions">
+      <span class="sug" onclick="sug(this)">Qual a receita bruta acumulada?</span>
+      <span class="sug" onclick="sug(this)">Quais as despesas de abril?</span>
+      <span class="sug" onclick="sug(this)">Qual o resultado mensal de maio?</span>
+      <span class="sug" onclick="sug(this)">Qual o total de distribuição de lucros?</span>
+      <span class="sug" onclick="sug(this)">Como estão as despesas administrativas?</span>
+      <span class="sug" onclick="sug(this)">Compare receitas vs despesas em 2026</span>
+    </div>
+    <div class="chat-msgs" id="chatMsgs">
+      <div class="msg-welcome">
+        <i class="fas fa-comments"></i>
+        Olá! Sou seu assistente financeiro. Clique em uma sugestão acima ou escreva sua pergunta.
+      </div>
+    </div>
+    <div class="chat-input-row">
+      <input class="chat-in" id="chatIn" type="text"
+        placeholder="Ex: Qual o valor de despesas com pessoal em março?"
+        onkeydown="if(event.key==='Enter')send()">
+      <button class="btn-send" onclick="send()">
+        <i class="fas fa-paper-plane"></i>Enviar
+      </button>
+    </div>
+  </div>
+
+</main>
+
+<footer>
+  <strong>Novus Auditiva</strong> · Painel Financeiro 2026 · Desenvolvido por <strong>AMZ Consultoria Empresarial</strong>
+</footer>
+
+<!-- upload modal -->
+<div class="overlay" id="overlay">
+  <div class="modal">
+    <h3><i class="fas fa-file-excel" style="color:#16A34A"></i>Atualizar Dados Financeiros</h3>
+    <div class="drop" id="drop" onclick="document.getElementById('fileIn').click()">
+      <i class="fas fa-cloud-upload-alt"></i>
+      <p><b>Clique para selecionar</b> ou arraste o arquivo aqui</p>
+      <p style="margin-top:.4rem;font-size:.76rem">Arquivo: Fluxo de caixa 2026 — Novus Juvevê.xlsx</p>
+    </div>
+    <input type="file" id="fileIn" accept=".xlsx" onchange="upload(event)">
+    <div class="status-box" id="upStatus"></div>
+    <div class="modal-btns">
+      <button class="btn-outline" onclick="closeModal()">Fechar</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── CONSTANTS ──
+const MONTHS = ['JAN','FEV','MAR','ABR','MAI','JUN','JUL','AGO','SET','OUT','NOV','DEZ'];
+const MLABELS = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+
+const KEY_ROWS = [
+  '(=) RECEITA BRUTA',
+  '(-) Deduções sobre Faturamento',
+  '(-) Custo Operacional',
+  '(!) Impostos',
+  '(=) RECEITA LÍQUIDA',
+  '(-) DESPESAS',
+  '(-) Despesas Administrativas',
+  '(-) Despesas com Pessoal',
+  '(-) Despesas Comerciais',
+  '(-) Despesas Financeiras',
+  '(-) Despesas Não Operacionais',
+  '(=) RESULTADO MENSAL',
+  '(-) DISTRIBUIÇÃO DE LUCROS',
+  '(=) RESULTADO MENSAL (CAIXA)',
+];
+
+// ── FORMAT ──
+const brl = new Intl.NumberFormat('pt-BR',{style:'currency',currency:'BRL'});
+function fmt(v){ return v===0?'—':brl.format(v) }
+function fmtSh(v){
+  const a=Math.abs(v);
+  if(a>=1e6) return `R$ ${(a/1e6).toFixed(1).replace('.',',')}M`;
+  if(a>=1e3) return `R$ ${(a/1e3).toFixed(1).replace('.',',')}K`;
+  return brl.format(v);
+}
+
+// ── CHARTS ──
+let cBar,cDough;
+function initCharts(d){
+  const cats=d.categorias||[];
+  const find=kw=>cats.find(c=>c.label.toLowerCase().includes(kw.toLowerCase()));
+
+  const rb  = find('RECEITA BRUTA');
+  const dep = find('(-) DESPESAS');
+  const res = find('RESULTADO MENSAL (CAIXA)');
+
+  const rbV  = MONTHS.map(m=>rb  ? (rb.values[m]||0)     : 0);
+  const depV = MONTHS.map(m=>dep ? Math.abs(dep.values[m]||0) : 0);
+  const resV = MONTHS.map(m=>res ? (res.values[m]||0)    : 0);
+
+  if(cBar) cBar.destroy();
+  cBar = new Chart(document.getElementById('cBar'),{
+    data:{
+      labels:MLABELS,
+      datasets:[
+        {type:'bar', label:'Receita Bruta', data:rbV,
+         backgroundColor:'rgba(22,163,74,.75)', borderRadius:5, borderSkipped:false},
+        {type:'bar', label:'Despesas', data:depV,
+         backgroundColor:'rgba(220,38,38,.75)', borderRadius:5, borderSkipped:false},
+        {type:'line', label:'Resultado Caixa', data:resV,
+         borderColor:'#C4A44A', backgroundColor:'rgba(196,164,74,.12)',
+         borderWidth:2.5, pointBackgroundColor:'#C4A44A', pointRadius:4,
+         tension:.35, fill:true, yAxisID:'y'},
+      ]
+    },
+    options:{
+      responsive:true, maintainAspectRatio:false,
+      plugins:{
+        legend:{position:'top',labels:{font:{family:'Poppins',size:11},boxWidth:12,padding:14}},
+        tooltip:{callbacks:{label:ctx=>` ${ctx.dataset.label}: ${fmt(ctx.parsed.y)}`}},
+      },
+      scales:{
+        x:{grid:{display:false},ticks:{font:{size:11}}},
+        y:{ticks:{callback:v=>fmtSh(v),font:{size:10}},grid:{color:'#F1F5F9'}},
+      }
+    }
+  });
+
+  const dLabels=['Administrativas','Pessoal','Comerciais','Financeiras','Não Operacionais'];
+  const dKeys  =['Despesas Administrativas','Despesas com Pessoal','Despesas Comerciais','Despesas Financeiras','Despesas Não Operacionais'];
+  const dData  = dKeys.map(k=>{
+    const c=cats.find(x=>x.label.toLowerCase().includes(k.toLowerCase()));
+    return c?Math.abs(c.total):0;
+  });
+
+  if(cDough) cDough.destroy();
+  cDough = new Chart(document.getElementById('cDough'),{
+    type:'doughnut',
+    data:{
+      labels:dLabels,
+      datasets:[{data:dData,
+        backgroundColor:['#1B3564','#3B82F6','#C4A44A','#DC2626','#94A3B8'],
+        borderWidth:3,borderColor:'#fff'}]
+    },
+    options:{
+      responsive:true, maintainAspectRatio:false, cutout:'60%',
+      plugins:{
+        legend:{position:'bottom',labels:{font:{family:'Poppins',size:11},boxWidth:12,padding:10}},
+        tooltip:{callbacks:{label:ctx=>` ${ctx.label}: ${fmt(ctx.parsed)}`}},
+      }
+    }
+  });
+}
+
+// ── KPIs ──
+function setKPI(id,v,signed){
+  const el=document.getElementById(id);
+  if(!el)return;
+  el.textContent=fmtSh(Math.abs(v));
+  if(signed){el.className='kpi-value '+(v<0?'neg':v>0?'pos':'');}
+}
+function setTxt(id,v){const e=document.getElementById(id);if(e)e.textContent=v}
+
+function applyKPIs(d){
+  const k=d.kpis||{};
+  const m=d.mes_atual||'—';
+  ['k-mes','k-mes2','k-mes3','k-mes4'].forEach(id=>setTxt(id,m));
+  setKPI('k-rb-mes',  k.receita_bruta_mes,  false);
+  setKPI('k-dep-mes', k.despesas_mes,       false);
+  setKPI('k-res-mes', k.resultado_mes,      true);
+  setKPI('k-dis-mes', k.distribuicao_mes,   false);
+  setTxt('k-rb-ano',  fmtSh(k.receita_bruta_anual||0));
+  setTxt('k-dep-ano', fmtSh(k.despesas_anual||0));
+  setTxt('k-res-ano', fmtSh(k.resultado_anual||0));
+  setTxt('k-dis-ano', fmtSh(k.distribuicao_anual||0));
+  document.getElementById('k-res-mes').className=
+    'kpi-value '+((k.resultado_mes||0)<0?'neg':'pos');
+}
+
+// ── TABLE ──
+function buildTable(cats){
+  const rows=cats.filter(c=>KEY_ROWS.includes(c.label));
+  const tb=document.getElementById('tBody');
+  tb.innerHTML=rows.map(c=>{
+    const l=c.label;
+    const cls = l.startsWith('(=)') && (l.includes('RESULTADO')||l.includes('RECEITA'))
+      ? 'row-total'
+      : l.includes('DISTRIBUIÇÃO') ? 'row-dist'
+      : (l.startsWith('(=)')||l.startsWith('(-) DESPESAS')) ? 'row-sub'
+      : '';
+    const cells=MONTHS.map(m=>{
+      const v=c.values[m]||0;
+      return `<td class="${v<0?'neg':v>0?'pos':''}">${v!==0?fmt(v):'—'}</td>`;
+    }).join('');
+    const t=c.total||0;
+    return `<tr class="${cls}"><td>${l}</td>${cells}<td class="${t<0?'neg':t>0?'pos':''}">${fmt(t)}</td></tr>`;
+  }).join('');
+}
+
+// ── LOAD ──
+async function loadData(){
+  document.getElementById('spin').classList.add('on');
+  try{
+    const r=await fetch('/api/data');
+    const d=await r.json();
+    if(d.error){console.warn(d.error);}
+    else{
+      setTxt('hUpdate',d.ultima_atualizacao||'—');
+      applyKPIs(d);
+      initCharts(d);
+      buildTable(d.categorias||[]);
+    }
+  }catch(e){console.error(e)}
+  document.getElementById('spin').classList.remove('on');
+}
+
+// ── UPLOAD ──
+function openModal(){
+  document.getElementById('overlay').classList.add('on');
+  const s=document.getElementById('upStatus');
+  s.className='status-box'; s.textContent='';
+}
+function closeModal(){document.getElementById('overlay').classList.remove('on')}
+
+const drop=document.getElementById('drop');
+drop.addEventListener('dragover',e=>{e.preventDefault();drop.classList.add('over')});
+drop.addEventListener('dragleave',()=>drop.classList.remove('over'));
+drop.addEventListener('drop',e=>{
+  e.preventDefault(); drop.classList.remove('over');
+  const f=e.dataTransfer.files[0]; if(f) doUpload(f);
+});
+function upload(e){const f=e.target.files[0];if(f)doUpload(f)}
+
+async function doUpload(file){
+  const s=document.getElementById('upStatus');
+  s.className='status-box info'; s.textContent='Processando o arquivo…';
+  const fd=new FormData(); fd.append('file',file);
+  try{
+    const r=await fetch('/api/upload',{method:'POST',body:fd});
+    const d=await r.json();
+    if(d.success){
+      s.className='status-box ok'; s.textContent='✓ '+d.message;
+      setTimeout(()=>{closeModal();loadData();},1400);
+    }else{
+      s.className='status-box err'; s.textContent='✗ '+d.message;
+    }
+  }catch(e){
+    s.className='status-box err'; s.textContent='✗ Erro de conexão.';
+  }
+}
+
+// ── CHAT ──
+let chatInit=false;
+function clearWelcome(){
+  if(!chatInit){document.getElementById('chatMsgs').innerHTML='';chatInit=true;}
+}
+function addMsg(txt,role){
+  clearWelcome();
+  const d=document.createElement('div');
+  d.className='msg '+role; d.textContent=txt;
+  const c=document.getElementById('chatMsgs');
+  c.appendChild(d); c.scrollTop=c.scrollHeight;
+  return d;
+}
+function addLoader(){
+  clearWelcome();
+  const d=document.createElement('div'); d.className='msg loading';
+  d.innerHTML='<div class="dot"></div><div class="dot"></div><div class="dot"></div>';
+  const c=document.getElementById('chatMsgs');
+  c.appendChild(d); c.scrollTop=c.scrollHeight;
+  return d;
+}
+async function send(){
+  const inp=document.getElementById('chatIn');
+  const q=inp.value.trim(); if(!q)return;
+  inp.value=''; addMsg(q,'user');
+  const ld=addLoader();
+  try{
+    const r=await fetch('/api/ask',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({question:q})});
+    const d=await r.json();
+    ld.remove(); addMsg(d.answer||d.error,'bot');
+  }catch(e){ld.remove();addMsg('Erro ao conectar com o assistente.','bot')}
+}
+function sug(el){document.getElementById('chatIn').value=el.textContent;send()}
+
+// ── INIT ──
+loadData();
+</script>
+</body>
+</html>
